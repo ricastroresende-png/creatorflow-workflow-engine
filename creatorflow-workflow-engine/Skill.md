@@ -1,7 +1,8 @@
 ---
 name: CreatorFlow.ai Master Skill
-description: Apply CreatorFlow's workflow engine, prompt system, writing style, and brand identity to produce structured, clear, future-focused outputs.
-version: 1.0.0
+description: Apply CreatorFlow's workflow engine, writing style, and structured methodologies to guide responses with clarity and precision.
+license: MIT
+metadata: {}
 ---
 
 # Overview
@@ -58,8 +59,8 @@ Use CreatorFlow.ai tone:
 # Examples  
 User: “Crie um workflow para lançar um produto digital.”  
 Claude (using this Skill):  
-- Define target  
-- Break into 5 macro-fases  
+- Definir target  
+- Dividir em macrofases  
 - Criar microtarefas  
 - Inserir checkpoints  
-- Incluir sugestões de automação  
+- Trazer sugestões de automação  
