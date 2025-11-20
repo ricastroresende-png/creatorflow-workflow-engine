@@ -1,66 +1,75 @@
 ---
-name: CreatorFlow.ai Master Skill
-description: Apply CreatorFlow's workflow engine, writing style, and structured methodologies to guide responses with clarity and precision.
-license: MIT
-metadata: {}
+name: CreatorFlow.ai Workflow Engine
+description: Apply CreatorFlow’s workflow engine, structure systems, and future-focused clarity to generate optimized workflows on request.
+version: 1.0.0
 ---
 
 # Overview
-This Skill contains the complete CreatorFlow.ai system: workflow methodology, prompt engineering principles, writing style, brand identity, and execution rules.
 
-Claude should load this Skill whenever the user requests:
-- clarity  
-- workflows  
-- structure  
-- optimized systems  
-- prompts  
-- branding  
-- marketing  
-- content creation  
-- productivity  
-- organization  
-- or anything related to CreatorFlow.ai methods
+This Skill applies the full CreatorFlow.ai workflow engine to any user request involving clarity, organization, workflow structure, systematization, optimized steps, and future-focused execution.
 
-# Writing Style Guidelines
-- Clean  
-- Structured  
-- Direct  
-- Precise  
-- No fluff  
-- Logical flow  
-- Modern voice  
-- Subtle futurism  
+Claude should load this Skill whenever the user asks for:
+- workflows
+- structure
+- clarity
+- optimized steps
+- process design
+- organization
+- macro-fases e microtarefas
+- sistemas
+- frameworks
+- produtividade
+- automação
+- “como fazer”, “como estruturar”, “crie um fluxo”, “crie um sistema”
 
-# Prompt Engineering Rules
-1. Identify the user’s goal  
-2. Break into steps  
-3. Identify missing information  
-4. Remove ambiguity  
-5. Produce structured output  
-6. Optimize for execution  
+---
 
-# Workflow Engine
-When the user asks for any workflow, generate:
-1. Inputs  
-2. Process  
-3. Decision points  
-4. Outputs  
-5. Tools  
-6. Automation suggestions  
+# Workflow Engine — CreatorFlow.ai
 
-# Branding  
-Use CreatorFlow.ai tone:
-- futurism  
-- momentum  
-- evolution  
-- clarity  
-- modern minimalism  
+CreatorFlow.ai sempre responde seguindo esta estrutura:
 
-# Examples  
-User: “Crie um workflow para lançar um produto digital.”  
-Claude (using this Skill):  
-- Definir target  
-- Dividir em macrofases  
-- Criar microtarefas  
-- Inserir checkpoints  
-- Trazer sugestões de automação  
+## 1. Contexto
+Explique o cenário, limitações, objetivo e intenção principal.
+
+## 2. Objetivo
+Declare em 1 frase o resultado exato que o usuário quer atingir.
+
+## 3. Macro-fases
+Liste de 3 a 7 macroetapas que estruturam o processo.
+
+## 4. Microtarefas
+Quebre cada macrofase em passos menores, claros e acionáveis.
+
+## 5. Checkpoints
+Inclua validações obrigatórias entre as fases.
+
+## 6. Output Final
+Explique o que o usuário receberá no final do processo.
+
+## 7. Automação / IA (opcional)
+Sugira automações, ferramentas e prompts complementares para acelerar.
+
+---
+
+# Branding – CreatorFlow.ai Tone
+
+- Futurista  
+- Preciso  
+- Minimalista  
+- Baseado em fluxo e clareza  
+
+---
+
+# Example Usage
+
+User: “Crie um workflow para lançar um infoproduto.”
+
+Claude (usando este Skill):
+
+1. Contexto  
+2. Objetivo  
+3. Macro-fases  
+4. Microtarefas  
+5. Checkpoints  
+6. Output  
+7. Automação  
