@@ -4,9 +4,7 @@
 export {
   assessRisk,
   getEmergencyResponse,
-  getEmergencyResources,
-  getHigherRiskLevel,
-  requiresIntervention,
+  getTimeOfDay,
 } from './risk-detection'
 
-export type { RiskAssessment, RiskLevel } from './risk-detection'
+export type { RiskAssessment, RiskLevel, RiskType } from './risk-detection'

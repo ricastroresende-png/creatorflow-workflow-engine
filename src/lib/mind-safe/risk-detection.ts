@@ -1,129 +1,119 @@
 // MIND-SAFE Risk Detection System
-// Detects risk indicators in messages before sending to LLM
+// Detecta indicadores de risco em mensagens antes de enviar ao LLM
 
 export type RiskLevel = 'none' | 'low' | 'medium' | 'high' | 'critical'
 
+export type RiskType =
+  | 'suicidal_ideation'
+  | 'self_harm'
+  | 'violence'
+  | 'substance_crisis'
+  | 'panic_attack'
+  | 'severe_distress'
+  | 'other'
+
 export interface RiskAssessment {
   level: RiskLevel
+  type: RiskType | null
   indicators: string[]
+  confidence: number
   requiresEmergencyResponse: boolean
 }
 
-// Risk indicators in Portuguese (Brazil)
-const RISK_PATTERNS: Record<Exclude<RiskLevel, 'none'>, RegExp[]> = {
+// Indicadores de risco em português
+const RISK_PATTERNS: Record<'critical' | 'high' | 'medium' | 'low', { pattern: RegExp; type: RiskType }[]> = {
   critical: [
-    // Suicidal ideation
-    /quero\s+(me\s+)?matar/i,
-    /vou\s+(me\s+)?matar/i,
-    /penso\s+em\s+(me\s+)?matar/i,
-    /não\s+quero\s+mais\s+viver/i,
-    /acabar\s+com\s+(tudo|minha\s+vida)/i,
-    /suicídio/i,
-    /suicidar/i,
-    /tirar\s+(minha\s+)?vida/i,
-    /dar\s+fim\s+a\s+(tudo|minha\s+vida)/i,
-    // Active self-harm
-    /vou\s+me\s+cortar/i,
-    /quero\s+me\s+machucar/i,
-    /vou\s+me\s+machucar/i,
+    // Ideação suicida
+    { pattern: /quero\s+(me\s+)?matar/i, type: 'suicidal_ideation' },
+    { pattern: /vou\s+(me\s+)?matar/i, type: 'suicidal_ideation' },
+    { pattern: /penso\s+em\s+(me\s+)?matar/i, type: 'suicidal_ideation' },
+    { pattern: /não\s+quero\s+mais\s+viver/i, type: 'suicidal_ideation' },
+    { pattern: /acabar\s+com\s+(tudo|minha\s+vida)/i, type: 'suicidal_ideation' },
+    { pattern: /suicídio/i, type: 'suicidal_ideation' },
+    { pattern: /suicidar/i, type: 'suicidal_ideation' },
+    { pattern: /tirar\s+(minha\s+)?vida/i, type: 'suicidal_ideation' },
+    { pattern: /dar\s+fim\s+a\s+(tudo|minha\s+vida)/i, type: 'suicidal_ideation' },
+    // Automutilação ativa
+    { pattern: /vou\s+me\s+cortar/i, type: 'self_harm' },
+    { pattern: /quero\s+me\s+machucar/i, type: 'self_harm' },
+    { pattern: /vou\s+me\s+machucar/i, type: 'self_harm' },
   ],
   high: [
-    // Passive self-harm
-    /me\s+cortei/i,
-    /me\s+machuquei/i,
-    /automutilação/i,
-    /cutting/i,
-    // Violence
-    /vou\s+matar\s+alguém/i,
-    /quero\s+matar\s+alguém/i,
-    /vou\s+fazer\s+uma\s+besteira/i,
-    // Substance crisis
-    /overdose/i,
-    /tomei\s+muitos\s+(remédios|comprimidos)/i,
+    // Automutilação passiva
+    { pattern: /me\s+cortei/i, type: 'self_harm' },
+    { pattern: /me\s+machuquei/i, type: 'self_harm' },
+    { pattern: /automutilação/i, type: 'self_harm' },
+    { pattern: /cutting/i, type: 'self_harm' },
+    // Violência
+    { pattern: /vou\s+matar\s+alguém/i, type: 'violence' },
+    { pattern: /quero\s+matar\s+alguém/i, type: 'violence' },
+    { pattern: /vou\s+fazer\s+uma\s+besteira/i, type: 'severe_distress' },
+    // Crise de substâncias
+    { pattern: /overdose/i, type: 'substance_crisis' },
+    { pattern: /tomei\s+muitos\s+(remédios|comprimidos)/i, type: 'substance_crisis' },
   ],
   medium: [
-    // Hopelessness
-    /não\s+vejo\s+saída/i,
-    /não\s+aguento\s+mais/i,
-    /cansado\s+de\s+viver/i,
-    /sem\s+esperança/i,
-    /não\s+tenho\s+(mais\s+)?forças/i,
-    // Extreme isolation
-    /não\s+quero\s+ver\s+ninguém/i,
-    /me\s+isolar\s+de\s+todos/i,
-    // Panic
-    /ataque\s+de\s+pânico/i,
-    /não\s+consigo\s+respirar/i,
-    /coração\s+acelerado/i,
+    // Desesperança
+    { pattern: /não\s+vejo\s+saída/i, type: 'severe_distress' },
+    { pattern: /não\s+aguento\s+mais/i, type: 'severe_distress' },
+    { pattern: /cansado\s+de\s+viver/i, type: 'severe_distress' },
+    { pattern: /sem\s+esperança/i, type: 'severe_distress' },
+    { pattern: /não\s+tenho\s+(mais\s+)?forças/i, type: 'severe_distress' },
+    // Isolamento extremo
+    { pattern: /não\s+quero\s+ver\s+ninguém/i, type: 'severe_distress' },
+    { pattern: /me\s+isolar\s+de\s+todos/i, type: 'severe_distress' },
+    // Pânico
+    { pattern: /ataque\s+de\s+pânico/i, type: 'panic_attack' },
+    { pattern: /não\s+consigo\s+respirar/i, type: 'panic_attack' },
+    { pattern: /coração\s+acelerado/i, type: 'panic_attack' },
   ],
   low: [
-    // General distress
-    /ansiedade/i,
-    /depressão/i,
-    /muito\s+triste/i,
-    /me\s+sentindo\s+mal/i,
-    /estresse/i,
-    /burnout/i,
-    /exausto/i,
-    /não\s+dormi/i,
+    // Angústia geral
+    { pattern: /ansiedade/i, type: 'other' },
+    { pattern: /depressão/i, type: 'other' },
+    { pattern: /muito\s+triste/i, type: 'other' },
+    { pattern: /me\s+sentindo\s+mal/i, type: 'other' },
+    { pattern: /estresse/i, type: 'other' },
+    { pattern: /burnout/i, type: 'other' },
+    { pattern: /exausto/i, type: 'other' },
+    { pattern: /não\s+dormi/i, type: 'other' },
   ],
 }
 
-const RISK_LEVEL_ORDER: RiskLevel[] = ['critical', 'high', 'medium', 'low', 'none']
-
-/**
- * Assesses the risk level of a message based on predefined patterns.
- * Returns the highest risk level found and all matching indicators.
- */
 export function assessRisk(message: string): RiskAssessment {
   const indicators: string[] = []
   let maxLevel: RiskLevel = 'none'
+  let detectedType: RiskType | null = null
+  let matchCount = 0
 
-  for (const level of RISK_LEVEL_ORDER) {
-    if (level === 'none') continue
+  const levels = ['critical', 'high', 'medium', 'low'] as const
 
+  for (const level of levels) {
     const patterns = RISK_PATTERNS[level]
-    for (const pattern of patterns) {
+    for (const { pattern, type } of patterns) {
       if (pattern.test(message)) {
         indicators.push(pattern.source)
-        // Update max level if this level is higher (earlier in the order array)
-        if (
-          maxLevel === 'none' ||
-          RISK_LEVEL_ORDER.indexOf(level) < RISK_LEVEL_ORDER.indexOf(maxLevel)
-        ) {
+        matchCount++
+        if (maxLevel === 'none' || levels.indexOf(level) < levels.indexOf(maxLevel as typeof levels[number])) {
           maxLevel = level
+          detectedType = type
         }
       }
     }
   }
 
+  // Calcular confiança baseada no número de matches
+  const confidence = Math.min(matchCount * 0.25, 1.0)
+
   return {
     level: maxLevel,
+    type: detectedType,
     indicators,
+    confidence,
     requiresEmergencyResponse: maxLevel === 'critical' || maxLevel === 'high',
   }
 }
 
-/**
- * Compares two risk levels and returns the higher one.
- */
-export function getHigherRiskLevel(a: RiskLevel, b: RiskLevel): RiskLevel {
-  const indexA = RISK_LEVEL_ORDER.indexOf(a)
-  const indexB = RISK_LEVEL_ORDER.indexOf(b)
-  return indexA <= indexB ? a : b
-}
-
-/**
- * Checks if a risk level requires immediate intervention.
- */
-export function requiresIntervention(level: RiskLevel): boolean {
-  return level === 'critical' || level === 'high'
-}
-
-/**
- * Returns an emergency response message for high-risk situations.
- * Includes crisis hotline information and grounding techniques.
- */
 export function getEmergencyResponse(): string {
   return `Ei, percebi que você está passando por um momento muito difícil. Antes de mais nada, quero que você saiba que não está sozinho(a).
 
@@ -141,31 +131,10 @@ Ou acesse: www.cvv.org.br
 Você não precisa enfrentar isso sozinho(a). Estou aqui para ouvir, mas um profissional pode te ajudar de forma mais completa.`
 }
 
-/**
- * Returns localized emergency resources based on country code.
- */
-export function getEmergencyResources(countryCode: string = 'BR'): {
-  hotline: string
-  hotlineName: string
-  website?: string
-} {
-  const resources: Record<string, { hotline: string; hotlineName: string; website?: string }> = {
-    BR: {
-      hotline: '188',
-      hotlineName: 'CVV - Centro de Valorização da Vida',
-      website: 'www.cvv.org.br',
-    },
-    PT: {
-      hotline: '808 200 204',
-      hotlineName: 'SOS Voz Amiga',
-      website: 'www.sosvozamiga.org',
-    },
-    US: {
-      hotline: '988',
-      hotlineName: 'Suicide & Crisis Lifeline',
-      website: '988lifeline.org',
-    },
-  }
-
-  return resources[countryCode] || resources['BR']
+export function getTimeOfDay(): string {
+  const hour = new Date().getHours()
+  if (hour >= 5 && hour < 12) return 'morning'
+  if (hour >= 12 && hour < 18) return 'afternoon'
+  if (hour >= 18 && hour < 22) return 'evening'
+  return 'night'
 }
