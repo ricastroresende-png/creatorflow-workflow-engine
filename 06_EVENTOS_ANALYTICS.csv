@@ -1,0 +1,20 @@
+metrica,definicao,formula,evento,propriedades,frequencia,meta_inicial,decisao
+First open,Primeira abertura do app,usuarios first_open/installs,first_open,platform source campaign,diaria,>=80% installs,Saude instalacao
+Signup started,Inicio cadastro,signup_started/first_open,signup_started,method platform,diaria,>=60%,Friccao login
+Signup completed,Cadastro concluido,signup_completed/signup_started,signup_completed,method platform,diaria,>=80%,Problemas login
+Onboarding completed,Concluiu onboarding,onboarding_completed/first_open,onboarding_completed,variant answers,diaria,>=50%,Qualidade onboarding
+Hospital added,Adicionou hospital,hospital_added/signup_completed,hospital_added,hospital_type city,diaria,>=40%,Configuracao minima
+Shift created,Criou plantao,shift_created/signup_completed,shift_created,date hospital has_value recurrence,diaria,>=35%,Ativacao
+First shift with value,Criou plantao com valor,first_shift_with_value/first_open,first_shift_with_value,value_range platform,diaria,>=25%,Evento ativacao primario
+Three shifts with value,Usuario qualificado,three_shifts_with_value/first_open,three_shifts_with_value,value_total hospitals,semanal,>=10%,Propensao pagamento
+Financial summary viewed,Viu resumo financeiro,financial_summary_viewed/first_shift_with_value,financial_summary_viewed,expected_amount pending_amount,diaria,>=80%,Momento aha
+Paywall view,Viu paywall,paywall_view/activated,paywall_view,context offer plan platform,diaria,>=50%,Exposicao monetizacao
+Paywall CTA,Toque no CTA,paywall_cta_tapped/paywall_view,paywall_cta_tapped,plan price trial,diaria,>=15%,Forca oferta
+Purchase started,Inicio compra,purchase_started/paywall_cta_tapped,purchase_started,store plan price,diaria,>=80%,Friccao loja
+Purchase completed,Compra concluida,purchase_completed/purchase_started,purchase_completed,store plan price currency,diaria,>=70%,Billing
+Purchase failed,Falha compra,purchase_failed/purchase_started,purchase_failed,error_code store platform,diaria,<10%,Bugs billing
+Restore purchase,Restore usado,restore_completed/restore_started,restore_completed,store platform,semanal,monitorar,Suporte confianca
+Subscription renewed,Renovacao,renewed/active_subscribers,subscription_renewed,plan tenure,semanal,monitorar,Retencao receita
+Subscription cancelled,Cancelamento,cancelled/active_subscribers,subscription_cancelled,plan reason,semanal,<8% mes,Churn
+Monthly close viewed,Fechamento visto,monthly_close_viewed/active_users,monthly_close_viewed,month amount_pending amount_received,semanal,>=30%,Retencao
+Payment marked received,Pagamento recebido marcado,payment_marked_received/active_users,payment_marked_received,delay_days amount,semanal,>=25%,Valor recorrente
